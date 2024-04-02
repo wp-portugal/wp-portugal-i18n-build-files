@@ -19,25 +19,46 @@
  */
 
 // ** Definições da base de dados - obtenha estes dados do seu serviço de alojamento ** //
-/** O nome da base de dados do WordPress */
+
+/**
+ *
+ * O nome da base de dados do WordPress
+ */
 define( 'DB_NAME', 'database_name_here' );
 
-/** O nome do utilizador da base de dados */
+/**
+ *
+ * O nome do utilizador da base de dados
+ */
 define( 'DB_USER', 'username_here' );
 
-/** A senha do utilizador da base de dados */
+/**
+ *
+ * A senha do utilizador da base de dados
+ */
 define( 'DB_PASSWORD', 'password_here' );
 
-/** O nome do servidor da base de dados */
+/**
+ *
+ * O nome do servidor da base de dados
+ */
 define( 'DB_HOST', 'localhost' );
 
-/** O "Database Charset" a usar na criação das tabelas. */
+/**
+ *
+ * O "Database Charset" a usar na criação das tabelas.
+ */
 define( 'DB_CHARSET', 'utf8' );
 
-/** O "Database Collate type". Se tem dúvidas não mude. */
+/**
+ *
+ * O "Database Collate type". Se tem dúvidas não mude.
+ */
 define( 'DB_COLLATE', '' );
 
-/**#@+
+/**
+ *
+ * #@+
  * Chaves únicas de autenticação.
  *
  * Mude para frases únicas e diferentes!
@@ -48,16 +69,19 @@ define( 'DB_COLLATE', '' );
  *
  * @since 2.6.0
  */
-define( 'AUTH_KEY',         'digite aqui a sua frase única' );
-define( 'SECURE_AUTH_KEY',  'digite aqui a sua frase única' );
-define( 'LOGGED_IN_KEY',    'digite aqui a sua frase única' );
-define( 'NONCE_KEY',        'digite aqui a sua frase única' );
-define( 'AUTH_SALT',        'digite aqui a sua frase única' );
+define( 'AUTH_KEY', 'digite aqui a sua frase única' );
+define( 'SECURE_AUTH_KEY', 'digite aqui a sua frase única' );
+define( 'LOGGED_IN_KEY', 'digite aqui a sua frase única' );
+define( 'NONCE_KEY', 'digite aqui a sua frase única' );
+define( 'AUTH_SALT', 'digite aqui a sua frase única' );
 define( 'SECURE_AUTH_SALT', 'digite aqui a sua frase única' );
-define( 'LOGGED_IN_SALT',   'digite aqui a sua frase única' );
-define( 'NONCE_SALT',       'digite aqui a sua frase única' );
+define( 'LOGGED_IN_SALT', 'digite aqui a sua frase única' );
+define( 'NONCE_SALT', 'digite aqui a sua frase única' );
 
-/**#@-*/
+/**
+ *
+ * #@-
+ */
 
 /**
  * Prefixo das tabelas do WordPress.
@@ -87,10 +111,16 @@ define( 'WP_DEBUG', false );
 
 /* E é tudo, pare de editar! */
 
-/** Caminho absoluto para o directório do WordPress. */
+/**
+ *
+ * Caminho absoluto para o directório do WordPress.
+ */
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/' );
 }
 
-/** Define as variáveis do WordPress e ficheiros a incluir. */
+/**
+ *
+ * Define as variáveis do WordPress e ficheiros a incluir.
+ */
 require_once ABSPATH . 'wp-settings.php';
