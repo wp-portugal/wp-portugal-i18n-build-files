@@ -1,0 +1,149 @@
+name: Update WordPress i18n build files
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # Runs every day at midnight.
+
+  # Allows you to run this workflow manually from the Actions tab.
+  workflow_dispatch:
+
+env:
+  OWNER: wp-portugal
+  REPO: wp-portugal-i18n-build-files
+  ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} # Access Token with write permissions.
+  USER_NAME: ${{ secrets.USER_NAME }}
+  USER_EMAIL: ${{ secrets.USER_EMAIL }}
+
+permissions:
+  contents: write
+
+jobs:
+
+  check-file-updates:
+    name: Check for file updates
+    runs-on: ubuntu-latest
+
+    outputs:
+      files_changed: ${{ steps.compare-files.outputs.files_changed }}
+
+    steps:
+
+    - name: Setup Git User
+      run: |
+        git config --global user.email $USER_EMAIL
+        git config --global user.name $USER_NAME
+
+    - name: Checkout trunk branch
+      uses: actions/checkout@v4
+      with:
+        ref: trunk
+        fetch-depth: 0
+
+    - name: Download WordPress build files from Trunk
+      id: download-files
+      run: |
+        mkdir downloads
+        curl -o downloads/readme.html https://raw.githubusercontent.com/WordPress/wordpress-develop/trunk/src/readme.html
+        curl -o downloads/wp-config-sample.php https://raw.githubusercontent.com/WordPress/wordpress-develop/trunk/wp-config-sample.php
+
+    - name: Check if source files have changed
+      id: compare-files
+      run: |
+        if ! cmp -s downloads/readme.html trunk/readme.html || ! cmp -s downloads/wp-config-sample.php trunk/wp-config-sample.php; then
+          echo "The build files have been updated!"
+          echo "files_changed=true" >> $GITHUB_OUTPUT
+        else
+          echo "The build files remain unchanged."
+          echo "files_changed=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Save workspace files to artifact
+      uses: actions/upload-artifact@v4
+      id: upload-artifact
+      if: steps.compare-files.outputs.files_changed == 'true'
+      with:
+        name: workspace-files
+        path: downloads/
+
+    - name: Steps debug info
+      run: |
+        echo "Steps: ${{ toJson(steps) }}"
+
+  commit-updated-files:
+    name: Commit updated files
+    runs-on: ubuntu-latest
+    needs: check-file-updates
+    if: ${{ needs.check-file-updates.outputs.files_changed == 'true' }}
+
+    steps:
+
+    - name: Setup Git User
+      run: |
+        git config --global user.email $USER_EMAIL
+        git config --global user.name $USER_NAME
+
+    - name: Checkout trunk branch
+      uses: actions/checkout@v4
+      with:
+        ref: trunk
+        fetch-depth: 0
+
+    - name: Get workspace files from artifact
+      uses: actions/download-artifact@v4
+      id: download-artifact
+      with:
+        name: workspace-files
+        path: trunk
+
+    - name: Commit updated source files
+      id: commit
+      run: |
+        # cp downloads/readme.html trunk/readme.html
+        # cp downloads/wp-config-sample.php trunk/wp-config-sample.php
+        git add trunk/readme.html trunk/wp-config-sample.php
+        git commit -m "Update local files with remote changes from Trunk"
+        git push origin HEAD
+
+    - name: Steps debug info
+      run: |
+        echo "Steps: ${{ toJson(steps) }}"
+
+  create-pull-request:
+    name: Create Pull Request
+    runs-on: ubuntu-latest
+    needs: commit-updated-files
+    if: ${{ needs.commit-updated-files.result == 'success' }}
+
+    steps:
+
+      - name: Check if Pull Request exists
+        id: check_pr
+        run: |
+          BRANCH=main
+          RESPONSE=$(curl -X GET -H "Authorization: token $ACCESS_TOKEN" "https://api.github.com/repos/$OWNER/$REPO/pulls?head=$OWNER:trunk")
+          PR_NUMBER=$(echo "$RESPONSE" | jq -r '.[].number')
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+
+      - name: Close existent Pull Request
+        id: close_pr
+        if: steps.check_pr.outputs.pr_number != ''
+        run: |
+          echo "Check PR: ${{ toJson(steps.check_pr) }}"
+          PR_NUMBER=${{ steps.check_pr.outputs.pr_number }}
+          URL="https://api.github.com/repos/$OWNER/$REPO/pulls/$PR_NUMBER"
+          RESPONSE=$(curl -X PATCH -H "Authorization: token $ACCESS_TOKEN" -d '{"state":"closed"}' $URL)
+          echo $RESPONSE
+
+      - name: Create new Pull Request
+        id: create_pr
+        run: |
+          BRANCH=main
+          TITLE="Actualizar ficheiros originais em inglês"
+          BODY="Este pull request automático submete alterações do branch 'trunk' para o 'main'."
+          URL="https://api.github.com/repos/$OWNER/$REPO/pulls"
+          RESPONSE=$(curl -X POST -H "Authorization: token $ACCESS_TOKEN" -d "{\"title\":\"$TITLE\",\"body\":\"$BODY\",\"head\":\"trunk\",\"base\":\"$BRANCH\"}" $URL)
+          echo $RESPONSE
+
+      - name: Steps debug info
+        run: |
+          echo "Steps: ${{ toJson(steps) }}"
