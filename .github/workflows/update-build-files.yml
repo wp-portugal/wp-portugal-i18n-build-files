@@ -124,18 +124,9 @@ jobs:
           PR_NUMBER=$(echo "$RESPONSE" | jq -r '.[].number')
           echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
 
-      - name: Close existent Pull Request
-        id: close_pr
-        if: steps.check_pr.outputs.pr_number != ''
-        run: |
-          echo "Check PR: ${{ toJson(steps.check_pr) }}"
-          PR_NUMBER=${{ steps.check_pr.outputs.pr_number }}
-          URL="https://api.github.com/repos/$OWNER/$REPO/pulls/$PR_NUMBER"
-          RESPONSE=$(curl -X PATCH -H "Authorization: token $ACCESS_TOKEN" -d '{"state":"closed"}' $URL)
-          echo $RESPONSE
-
       - name: Create new Pull Request
         id: create_pr
+        if: steps.check_pr.outputs.pr_number == ''
         run: |
           BRANCH=main
           TITLE="Actualizar ficheiros originais em inglês"
