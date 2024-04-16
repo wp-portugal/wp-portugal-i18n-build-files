@@ -4,10 +4,14 @@ Um pacote do WordPress é um ficheiro ZIP que consiste no WordPress na sua total
 
 Neste repositório são mantidos os ficheiros personalizados incluídos na distribuição do WordPress traduzida para português (Portugal).
 
+### Estrutura de ficheiros e pastas deste repositório
+
+- `/en_US` - Ficheiros originais em inglês, actualizados automaticamente pela [acção](https://github.com/wp-portugal/wp-portugal-i18n-build-files/actions/workflows/update-build-files.yml)
+- `/pt_PT` - Versões traduzidas para português, actualizadas manualmente.
+
 ### Sobre a criação automática de actualizações no WordPress.org
 
 - https://make.wordpress.org/polyglots/handbook/for-editors/packaging-localized-wordpress/automated-release-packages/
-
 
 ### Ficheiros originais em *Trunk*
 
