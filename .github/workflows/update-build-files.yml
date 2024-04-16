@@ -11,8 +11,6 @@ env:
   OWNER: wp-portugal
   REPO: wp-portugal-i18n-build-files
   ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} # Access Token with write permissions.
-  USER_NAME: ${{ secrets.USER_NAME }}
-  USER_EMAIL: ${{ secrets.USER_EMAIL }}
 
 permissions:
   contents: write
@@ -27,11 +25,6 @@ jobs:
       files_changed: ${{ steps.compare-files.outputs.files_changed }}
 
     steps:
-
-    - name: Setup Git User
-      run: |
-        git config --global user.email $USER_EMAIL
-        git config --global user.name $USER_NAME
 
     - name: Checkout trunk branch
       uses: actions/checkout@v4
@@ -77,11 +70,6 @@ jobs:
 
     steps:
 
-    - name: Setup Git User
-      run: |
-        git config --global user.email $USER_EMAIL
-        git config --global user.name $USER_NAME
-
     - name: Checkout trunk branch
       uses: actions/checkout@v4
       with:
@@ -96,13 +84,9 @@ jobs:
         path: trunk
 
     - name: Commit updated source files
-      id: commit
-      run: |
-        # cp downloads/readme.html trunk/readme.html
-        # cp downloads/wp-config-sample.php trunk/wp-config-sample.php
-        git add trunk/readme.html trunk/wp-config-sample.php
-        git commit -m "Update local files with remote changes from Trunk"
-        git push origin HEAD
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: Update local files with remote changes from Trunk
 
     - name: Steps debug info
       run: |
