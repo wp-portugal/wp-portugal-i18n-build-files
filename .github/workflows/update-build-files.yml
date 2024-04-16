@@ -8,12 +8,13 @@ on:
   workflow_dispatch:
 
 env:
-  OWNER: wp-portugal
-  REPO: wp-portugal-i18n-build-files
-  ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} # Access Token with write permissions.
+  OWNER: ${{ github.repository_owner }}
+  REPO: ${{ github.repository }}
+  TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
 
@@ -104,7 +105,7 @@ jobs:
         id: check_pr
         run: |
           BRANCH=main
-          RESPONSE=$(curl -X GET -H "Authorization: token $ACCESS_TOKEN" "https://api.github.com/repos/$OWNER/$REPO/pulls?head=$OWNER:trunk")
+          RESPONSE=$(curl -X GET -H "Authorization: token $TOKEN" "https://api.github.com/repos/$REPO/pulls?head=$OWNER:trunk")
           PR_NUMBER=$(echo "$RESPONSE" | jq -r '.[].number')
           echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
 
@@ -115,8 +116,8 @@ jobs:
           BRANCH=main
           TITLE="Actualizar ficheiros originais em inglês"
           BODY="Este pull request automático submete alterações do branch 'trunk' para o 'main'."
-          URL="https://api.github.com/repos/$OWNER/$REPO/pulls"
-          RESPONSE=$(curl -X POST -H "Authorization: token $ACCESS_TOKEN" -d "{\"title\":\"$TITLE\",\"body\":\"$BODY\",\"head\":\"trunk\",\"base\":\"$BRANCH\"}" $URL)
+          URL="https://api.github.com/repos/$REPO/pulls"
+          RESPONSE=$(curl -X POST -H "Authorization: token $TOKEN" -d "{\"title\":\"$TITLE\",\"body\":\"$BODY\",\"head\":\"trunk\",\"base\":\"$BRANCH\"}" $URL)
           echo $RESPONSE
 
       - name: Steps debug info
