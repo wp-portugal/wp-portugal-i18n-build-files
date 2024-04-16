@@ -27,13 +27,13 @@ jobs:
 
     steps:
 
-    - name: Checkout trunk branch
+    - name: Checkout english branch
       uses: actions/checkout@v4
       with:
-        ref: trunk
+        ref: english
         fetch-depth: 0
 
-    - name: Download WordPress build files from Trunk
+    - name: Download WordPress build files from the repository branch 'trunk'
       id: download-files
       run: |
         mkdir downloads
@@ -43,7 +43,7 @@ jobs:
     - name: Check if source files have changed
       id: compare-files
       run: |
-        if ! cmp -s downloads/readme.html trunk/readme.html || ! cmp -s downloads/wp-config-sample.php trunk/wp-config-sample.php; then
+        if ! cmp -s downloads/readme.html en_US/readme.html || ! cmp -s downloads/wp-config-sample.php en_US/wp-config-sample.php; then
           echo "The build files have been updated!"
           echo "files_changed=true" >> $GITHUB_OUTPUT
         else
@@ -71,10 +71,10 @@ jobs:
 
     steps:
 
-    - name: Checkout trunk branch
+    - name: Checkout english branch
       uses: actions/checkout@v4
       with:
-        ref: trunk
+        ref: english
         fetch-depth: 0
 
     - name: Get workspace files from artifact
@@ -82,12 +82,12 @@ jobs:
       id: download-artifact
       with:
         name: workspace-files
-        path: trunk
+        path: en_US
 
     - name: Commit updated source files
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: Update local files with remote changes from Trunk
+        commit_message: Update english files according to remote changes in WordPress 'trunk'
 
     - name: Steps debug info
       run: |
@@ -105,7 +105,7 @@ jobs:
         id: check_pr
         run: |
           BRANCH=main
-          RESPONSE=$(curl -X GET -H "Authorization: token $TOKEN" "https://api.github.com/repos/$REPO/pulls?head=$OWNER:trunk")
+          RESPONSE=$(curl -X GET -H "Authorization: token $TOKEN" "https://api.github.com/repos/$REPO/pulls?head=$OWNER:english")
           PR_NUMBER=$(echo "$RESPONSE" | jq -r '.[].number')
           if [ -n "$PR_NUMBER" ]; then
             echo "PR number found: $PR_NUMBER"
@@ -121,9 +121,9 @@ jobs:
         run: |
           BRANCH=main
           TITLE="Actualizar ficheiros originais em inglês"
-          BODY="Este pull request automático submete alterações do branch 'trunk' para o 'main'."
+          BODY="Actualização automática para submeter alterações do branch 'english' para o 'main'."
           URL="https://api.github.com/repos/$REPO/pulls"
-          RESPONSE=$(curl -X POST -H "Authorization: token $TOKEN" -d "{\"title\":\"$TITLE\",\"body\":\"$BODY\",\"head\":\"trunk\",\"base\":\"$BRANCH\"}" $URL)
+          RESPONSE=$(curl -X POST -H "Authorization: token $TOKEN" -d "{\"title\":\"$TITLE\",\"body\":\"$BODY\",\"head\":\"english\",\"base\":\"$BRANCH\"}" $URL)
           echo $RESPONSE
 
       - name: Steps debug info
