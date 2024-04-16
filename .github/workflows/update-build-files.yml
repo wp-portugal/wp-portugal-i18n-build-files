@@ -107,7 +107,13 @@ jobs:
           BRANCH=main
           RESPONSE=$(curl -X GET -H "Authorization: token $TOKEN" "https://api.github.com/repos/$REPO/pulls?head=$OWNER:trunk")
           PR_NUMBER=$(echo "$RESPONSE" | jq -r '.[].number')
-          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          if [ -n "$PR_NUMBER" ]; then
+            echo "PR number found: $PR_NUMBER"
+            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          else
+            echo "No pull request found."
+          fi
+
 
       - name: Create new Pull Request
         id: create_pr
