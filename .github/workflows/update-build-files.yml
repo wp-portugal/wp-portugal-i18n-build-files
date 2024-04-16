@@ -43,7 +43,7 @@ jobs:
     - name: Check if source files have changed
       id: compare-files
       run: |
-        if ! cmp -s downloads/readme.html trunk/readme.html || ! cmp -s downloads/wp-config-sample.php trunk/wp-config-sample.php; then
+        if ! cmp -s downloads/readme.html en_US/readme.html || ! cmp -s downloads/wp-config-sample.php en_US/wp-config-sample.php; then
           echo "The build files have been updated!"
           echo "files_changed=true" >> $GITHUB_OUTPUT
         else
@@ -82,7 +82,7 @@ jobs:
       id: download-artifact
       with:
         name: workspace-files
-        path: trunk
+        path: en_US
 
     - name: Commit updated source files
       uses: stefanzweifel/git-auto-commit-action@v5
@@ -121,7 +121,7 @@ jobs:
         run: |
           BRANCH=main
           TITLE="Actualizar ficheiros originais em inglês"
-          BODY="Este pull request automático submete alterações do branch 'trunk' para o 'main'."
+          BODY="Actualização automática para submeter alterações do branch 'trunk' para o 'main'."
           URL="https://api.github.com/repos/$REPO/pulls"
           RESPONSE=$(curl -X POST -H "Authorization: token $TOKEN" -d "{\"title\":\"$TITLE\",\"body\":\"$BODY\",\"head\":\"trunk\",\"base\":\"$BRANCH\"}" $URL)
           echo $RESPONSE
