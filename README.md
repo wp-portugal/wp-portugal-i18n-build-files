@@ -11,6 +11,7 @@ Neste repositório são mantidos os ficheiros personalizados incluídos na distr
 
 ### Sobre a criação automática de actualizações no WordPress.org
 
+- https://pt.wordpress.org/team/2024/04/17/lancamento-automatizado-de-novas-versoes/
 - https://make.wordpress.org/polyglots/handbook/for-editors/packaging-localized-wordpress/automated-release-packages/
 
 ### Ficheiros originais em *Trunk*
