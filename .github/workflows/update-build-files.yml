@@ -52,6 +52,9 @@ jobs:
         if ! cmp -s downloads/readme.html en_US/readme.html || ! cmp -s downloads/wp-config-sample.php en_US/wp-config-sample.php; then
           echo "The build files have been updated!"
           echo "files_changed=true" >> $GITHUB_OUTPUT
+        else
+          echo "The build files remain unchanged."
+          echo "files_changed=false" >> $GITHUB_OUTPUT
         fi
 
     - name: Save workspace files to artifact
