@@ -10,7 +10,7 @@ on:
 env:
   OWNER: ${{ github.repository_owner }}
   REPO: ${{ github.repository }}
-  TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GH_TOKEN: "${{ github.token }}"
 
 permissions:
   contents: write
@@ -109,8 +109,6 @@ jobs:
 
       - name: Check if Pull Request exists
         id: check_pr
-        env:
-          GH_TOKEN: "${{ github.token }}"
         run: |
           PR_NUMBER="$(gh pr list --head "${OWNER}:english" --json "number" --jq '.[0]."number"')"
           if [ -n "$PR_NUMBER" ]; then
@@ -126,7 +124,6 @@ jobs:
         env:
           TITLE: "Actualizar ficheiros originais em inglês"
           BODY: "Actualização automática para submeter alterações do branch 'english' para o 'main'."
-          GH_TOKEN: "${{ github.token }}"
         run: |
           gh pr create --title "${TITLE}" --body "${BODY}" --head "english" --base "main"
 
