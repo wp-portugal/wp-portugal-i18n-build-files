@@ -114,16 +114,14 @@ jobs:
             echo "No pull request found."
           fi
 
-      - name: Create new Pull Request
+      - name: Create Pull Request
         id: create_pr
         if: steps.check_pr.outputs.pr_number == ''
+        env:
+          TITLE: "Actualizar ficheiros originais em inglês"
+          BODY: "Actualização automática para submeter alterações do branch 'english' para o 'main'."
         run: |
-          BRANCH=main
-          TITLE="Actualizar ficheiros originais em inglês"
-          BODY="Actualização automática para submeter alterações do branch 'english' para o 'main'."
-          URL="https://api.github.com/repos/$REPO/pulls"
-          RESPONSE=$(curl -X POST -H "Authorization: token $TOKEN" -d "{\"title\":\"$TITLE\",\"body\":\"$BODY\",\"head\":\"english\",\"base\":\"$BRANCH\"}" $URL)
-          echo $RESPONSE
+          gh pr create --title "${TITLE}" --body "${BODY}" --head "english" --base "main"
 
       - name: Steps debug info
         run: |
