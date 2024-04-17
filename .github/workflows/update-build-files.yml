@@ -2,7 +2,7 @@ name: Update WordPress i18n build files
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # Runs every day at midnight.
+    - cron: "0 0 * * *"  # Funciona todos os dias à meia-noite.
 
   # Allows you to run this workflow manually from the Actions tab.
   workflow_dispatch:
@@ -33,12 +33,18 @@ jobs:
         ref: english
         fetch-depth: 0
 
-    - name: Download WordPress build files from the repository branch 'trunk'
-      id: download-files
+    - name: Checkout WordPress/wordpress-develop
+      uses: actions/checkout@v4
+      with:
+        repository: WordPress/wordpress-develop
+        fetch-depth: 1
+        path: wordpress-develop
+
+    - name: Copy WordPress build files
       run: |
         mkdir downloads
-        curl -o downloads/readme.html https://raw.githubusercontent.com/WordPress/wordpress-develop/trunk/src/readme.html
-        curl -o downloads/wp-config-sample.php https://raw.githubusercontent.com/WordPress/wordpress-develop/trunk/wp-config-sample.php
+        cp --force wordpress-develop/src/readme.html downloads/readme.html
+        cp --force wordpress-develop/wp-config-sample.php downloads/wp-config-sample.php
 
     - name: Check if source files have changed
       id: compare-files
@@ -46,9 +52,6 @@ jobs:
         if ! cmp -s downloads/readme.html en_US/readme.html || ! cmp -s downloads/wp-config-sample.php en_US/wp-config-sample.php; then
           echo "The build files have been updated!"
           echo "files_changed=true" >> $GITHUB_OUTPUT
-        else
-          echo "The build files remain unchanged."
-          echo "files_changed=false" >> $GITHUB_OUTPUT
         fi
 
     - name: Save workspace files to artifact
