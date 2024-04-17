@@ -120,6 +120,7 @@ jobs:
         env:
           TITLE: "Actualizar ficheiros originais em inglês"
           BODY: "Actualização automática para submeter alterações do branch 'english' para o 'main'."
+          GH_TOKEN: "${{ github.token }}"
         run: |
           gh pr create --title "${TITLE}" --body "${BODY}" --head "english" --base "main"
 
