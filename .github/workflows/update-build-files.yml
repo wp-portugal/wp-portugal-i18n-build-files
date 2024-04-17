@@ -106,10 +106,10 @@ jobs:
 
       - name: Check if Pull Request exists
         id: check_pr
+        env:
+          GH_TOKEN: "${{ github.token }}"
         run: |
-          BRANCH=main
-          RESPONSE=$(curl -X GET -H "Authorization: token $TOKEN" "https://api.github.com/repos/$REPO/pulls?head=$OWNER:english")
-          PR_NUMBER=$(echo "$RESPONSE" | jq -r '.[].number')
+          PR_NUMBER="$(gh pr list --head "${OWNER}:english" --json "number" --jq '.[0]."number"')"
           if [ -n "$PR_NUMBER" ]; then
             echo "PR number found: $PR_NUMBER"
             echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
@@ -117,17 +117,15 @@ jobs:
             echo "No pull request found."
           fi
 
-
-      - name: Create new Pull Request
+      - name: Create Pull Request
         id: create_pr
         if: steps.check_pr.outputs.pr_number == ''
+        env:
+          TITLE: "Actualizar ficheiros originais em inglês"
+          BODY: "Actualização automática para submeter alterações do branch 'english' para o 'main'."
+          GH_TOKEN: "${{ github.token }}"
         run: |
-          BRANCH=main
-          TITLE="Actualizar ficheiros originais em inglês"
-          BODY="Actualização automática para submeter alterações do branch 'english' para o 'main'."
-          URL="https://api.github.com/repos/$REPO/pulls"
-          RESPONSE=$(curl -X POST -H "Authorization: token $TOKEN" -d "{\"title\":\"$TITLE\",\"body\":\"$BODY\",\"head\":\"english\",\"base\":\"$BRANCH\"}" $URL)
-          echo $RESPONSE
+          gh pr create --title "${TITLE}" --body "${BODY}" --head "english" --base "main"
 
       - name: Steps debug info
         run: |
