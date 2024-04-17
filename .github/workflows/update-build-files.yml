@@ -2,7 +2,7 @@ name: Update WordPress i18n build files
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # Funciona todos os dias à meia-noite.
+    - cron: "0 0 * * *"  # Runs every day at midnight.
 
   # Allows you to run this workflow manually from the Actions tab.
   workflow_dispatch:
@@ -10,7 +10,7 @@ on:
 env:
   OWNER: ${{ github.repository_owner }}
   REPO: ${{ github.repository }}
-  TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GH_TOKEN: "${{ github.token }}"
 
 permissions:
   contents: write
@@ -52,6 +52,9 @@ jobs:
         if ! cmp -s downloads/readme.html en_US/readme.html || ! cmp -s downloads/wp-config-sample.php en_US/wp-config-sample.php; then
           echo "The build files have been updated!"
           echo "files_changed=true" >> $GITHUB_OUTPUT
+        else
+          echo "The build files remain unchanged."
+          echo "files_changed=false" >> $GITHUB_OUTPUT
         fi
 
     - name: Save workspace files to artifact
@@ -104,10 +107,11 @@ jobs:
 
     steps:
 
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Check if Pull Request exists
         id: check_pr
-        env:
-          GH_TOKEN: "${{ github.token }}"
         run: |
           PR_NUMBER="$(gh pr list --head "${OWNER}:english" --json "number" --jq '.[0]."number"')"
           if [ -n "$PR_NUMBER" ]; then
@@ -123,7 +127,6 @@ jobs:
         env:
           TITLE: "Actualizar ficheiros originais em inglês"
           BODY: "Actualização automática para submeter alterações do branch 'english' para o 'main'."
-          GH_TOKEN: "${{ github.token }}"
         run: |
           gh pr create --title "${TITLE}" --body "${BODY}" --head "english" --base "main"
 
