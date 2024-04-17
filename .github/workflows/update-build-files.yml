@@ -117,8 +117,6 @@ jobs:
       - name: Create new Pull Request
         id: create_pr
         if: steps.check_pr.outputs.pr_number == ''
-        env:
-          GH_TOKEN: "${{ github.token }}"
         run: |
           BRANCH=main
           TITLE="Actualizar ficheiros originais em inglês"
