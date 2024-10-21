@@ -89,7 +89,7 @@ define( 'NONCE_SALT', 'digite aqui a sua frase única' );
  * Pode suportar múltiplas instalações numa só base de dados, ao dar a cada
  * instalação um prefixo único. Só algarismos, letras e underscores, por favor!
  *
- * No momento da instalação, são criadas as tabelas na BD com o prefixo $table_prefix.
+ * No momento da instalação, as tabelas da base de dados são criadas com o prefixo especificado.
  * Alterar este valor depois de o WordPress estar instalado fará com que o site
  * deixe de ser reconhecido.
  *
