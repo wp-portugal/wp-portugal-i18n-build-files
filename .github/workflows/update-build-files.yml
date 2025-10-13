@@ -91,7 +91,7 @@ jobs:
         path: en_US
 
     - name: Commit updated source files
-      uses: stefanzweifel/git-auto-commit-action@v6
+      uses: stefanzweifel/git-auto-commit-action@v7
       with:
         commit_message: Update english files according to remote changes in WordPress 'trunk'
 
