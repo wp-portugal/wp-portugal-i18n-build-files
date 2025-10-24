@@ -48,7 +48,7 @@ define( 'DB_HOST', 'localhost' );
  *
  * O "Database Charset" a usar na criação das tabelas.
  */
-define( 'DB_CHARSET', 'utf8' );
+define( 'DB_CHARSET', 'utf8mb4' );
 
 /**
  *
