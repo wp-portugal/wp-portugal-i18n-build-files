@@ -58,7 +58,7 @@ jobs:
         fi
 
     - name: Save workspace files to artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       id: upload-artifact
       if: steps.compare-files.outputs.files_changed == 'true'
       with:
