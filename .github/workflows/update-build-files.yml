@@ -28,13 +28,13 @@ jobs:
     steps:
 
     - name: Checkout english branch
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         ref: english
         fetch-depth: 0
 
     - name: Checkout WordPress/wordpress-develop
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         repository: WordPress/wordpress-develop
         fetch-depth: 1
@@ -78,7 +78,7 @@ jobs:
     steps:
 
     - name: Checkout english branch
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         ref: english
         fetch-depth: 0
@@ -108,7 +108,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Check if Pull Request exists
         id: check_pr
