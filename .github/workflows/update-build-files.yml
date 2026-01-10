@@ -84,7 +84,7 @@ jobs:
         fetch-depth: 0
 
     - name: Get workspace files from artifact
-      uses: actions/download-artifact@v6
+      uses: actions/download-artifact@v7
       id: download-artifact
       with:
         name: workspace-files
